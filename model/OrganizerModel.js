@@ -7,6 +7,10 @@ const OrganizerSchema = new Schema(
             type: String,
             required: true
         },
+        description: {
+            type: String,
+            required: false
+        },
         phone_number: {
             type: String,
             required: true

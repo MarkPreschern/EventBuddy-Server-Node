@@ -20,26 +20,16 @@ const EventSchema = new Schema(
             type: Date,
             required: true
         },
-        end_date: {
-            type: Date,
-            required: true
-        },
-        start_time: {
-            type: Date,
-            required: true
-        },
         url: {
             type: String,
             required: true
         },
-        organizer: {
-            type: Organizer,
-            required: true
+        external: {
+            type: Boolean,
+            default: false
         },
-        venue: {
-            type: Venue,
-            required: true
-        },
+        venue: Venue,
+        organizer: Organizer,
         attendee_likes: [Attendee]
     });
 

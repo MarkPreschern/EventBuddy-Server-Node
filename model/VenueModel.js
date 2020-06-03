@@ -23,9 +23,6 @@ const VenueSchema = new Schema(
             type: String,
             required: true
         },
-        phone_number: {
-            type: Number,
-            required: true
-        }
+        phone_number: Number
     });
 module.exports = mongoose.model("VenueSchema", VenueSchema);

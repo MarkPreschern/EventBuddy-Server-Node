@@ -1,22 +1,48 @@
+import TicketMasterService from "../services/TicketMasterService"
+
 const express = require("express");
 const eventRouter = express.Router();
 const Event = require("../model/EventModel");
 
 //read event
-eventRouter.get("/", (req, res) => {
-    Event.find({}, (err, response) => {
-        if (err) {
-            res.status(500).json(
-                {
-                    message: {
-                        msgBody: "Unable to get events",
-                        msgError: true
-                    }
-                });
-        } else {
-            res.status(200).json(response);
-        }
-    });
+eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", async (req, res) => {
+    const city = req.params.city;
+    const startDateTime = req.params.city;
+    const endDateTime = req.params.city;
+    const keyword = req.params.city;
+
+    // set parameters
+    const params = {};
+    if (city !== undefined) {
+        params.city = city;
+    }
+    if (startDateTime !== undefined && endDateTime !== undefined) {
+        params.startDateTime = startDateTime;
+        params.endDateTime = endDateTime;
+    }
+    if (keyword !== undefined) {
+        params.keyword = keyword;
+    }
+
+    // get events and TicketMaster events
+    const [err, response] = await Event.find(params).limit(20);
+    const [err2, response2] = await TicketMasterService.getEvents(params);
+
+    if (err && err2) {
+        res.status(500).json(
+            {
+                message: {
+                    msgBody: "Unable to get events",
+                    msgError: true
+                }
+            });
+    } else if (err) {
+        res.status(200).json(response2);
+    } else if (err2) {
+        res.status(200).json(response);
+    } else {
+        res.status(200).json([...response, ...response2]);
+    }
 });
 
 //read event by id
@@ -36,6 +62,19 @@ eventRouter.get("/:id", (req, res) => {
     });
 });
 
+//read event by id from TicketMaster API
+eventRouter.get("/external/:id", (req, res) => {
+    TicketMasterService.getEvent(req.params.id)
+        .then(response => res.status(200).json(response))
+        .catch(err => res.status(500).json(
+            {
+                message: {
+                    msgBody: err.message,
+                    msgError: true
+                }
+            }
+        ));
+});
 
 //create event
 eventRouter.post("/", (req, res) => {

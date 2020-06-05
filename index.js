@@ -19,15 +19,15 @@ const mongoURL = process.env.MONGO_URL || "mongodb://localhost:27017/EventBuddy"
 
 // events
 const event = require("./routes/EventRoute");
-app.use("/events", event);
+app.use("/api/events", event);
 
 // attendees
 const attendee = require("./routes/AttendeeRoute");
-app.use("/attendees", attendee);
+app.use("/api/attendees", attendee);
 
 // organizers
 const organizers = require("./routes/OrganizerRoute");
-app.use("/organizers", organizers);
+app.use("/api/organizers", organizers);
 
 /**
  * Database Connection
@@ -51,5 +51,5 @@ mongoose.connect(mongoURL, {
  */
 
 app.listen(port, () => {
-    console.log(`Listening to requests on http://localhost:${port}`);
+    console.log(`Listening to requests on port ${port}`);
 });

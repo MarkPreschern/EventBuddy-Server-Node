@@ -85,15 +85,28 @@ const format = async (data) => {
 export default {
 
     getEvents : (params) => {
-        return fetch(url("/events", params)).then(res => {
-            return format(res.json());
+        return fetch(url("/events", params)).then(result => {
+            return format(result.json());
         });
     },
 
-    getEvent : (_id) => {
-        return fetch(url(`/events/${_id}`, {})).then(res => {
-            return format(res.json());
-        });
+    getEvent : (res, _id) => {
+        fetch(url(`/events/${_id}`, {}))
+            .then(result => {
+                return format(result.json());
+            })
+            .then(response => {
+                res.status(200).json(response)
+            })
+            .catch(err => {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: err.message,
+                            msgError: true
+                        }
+                    }
+                )
+            });
     },
-
 }

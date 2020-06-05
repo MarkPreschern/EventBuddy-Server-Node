@@ -2,6 +2,7 @@ const organizerModel = require("../model/OrganizerModel");
 
 export default {
 
+    // gets an organizer
     getOrganizer : (res, organizerId) => {
         organizerModel.find(organizerId, (err, response) => {
             if (err) {
@@ -18,6 +19,7 @@ export default {
         });
     },
 
+    // creates an organizer
     createOrganizer : (res, organizer) => {
         new Organizer(organizer).save((err, document) => {
             if (err) {
@@ -34,6 +36,7 @@ export default {
         })
     },
 
+    // deletes an organizer
     deleteOrganizer : (res, organizerId) => {
         organizerModel.findByIdAndDelete(organizerId, err => {
             if (err) {
@@ -50,6 +53,7 @@ export default {
         })
     },
 
+    // updates an organizer
     updateOrganizer : (res, organizerId, organizer) => {
         organizerModel.findOneAndUpdate(organizerId, organizer, {runValidators: true, new: true}, (err, document) => {
             if (err) {

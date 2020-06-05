@@ -66,8 +66,18 @@ eventRouter.delete("/:eventId", (req, res) => {
 });
 
 //update event by id
-eventRouter.put(":eventId", (req, res) => {
+eventRouter.put("/:eventId", (req, res) => {
     eventService.updateEvent(res, req.params.eventId, req.body);
+});
+
+//add attendee like to event
+eventRouter.post("/:eventId/attendee/:attendeeId", (req, res) => {
+    eventService.addEventAttendee(res, req.params.eventId, req.params.attendeeId);
+});
+
+//add attendee like from event
+eventRouter.delete("/:eventId/attendee/:attendeeId", (req, res) => {
+    eventService.removeEventAttendee(res, req.params.eventId, req.params.attendeeId);
 });
 
 module.exports = eventRouter;

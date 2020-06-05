@@ -18,8 +18,18 @@ attendeeRouter.delete("/:attendeeId", (req, res) => {
 });
 
 //update attendee by id
-attendeeRouter.put(":attendeeId", (req, res) => {
+attendeeRouter.put("/:attendeeId", (req, res) => {
     attendeeService.updateAttendee(res, req.params.attendeeId, req.body);
+});
+
+//add liked event to attendee
+attendeeRouter.post("/:attendeeId/event/:eventId", (req, res) => {
+    attendeeService.addLikedEvent(res, req.params.attendeeId, req.params.eventId);
+});
+
+//remove liked event from attendee
+attendeeRouter.delete("/:attendeeId/event/:eventId", (req, res) => {
+    attendeeService.removeLikedEvent(res, req.params.attendeeId, req.params.eventId);
 });
 
 module.exports = attendeeRouter;

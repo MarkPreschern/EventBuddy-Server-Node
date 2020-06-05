@@ -17,14 +17,10 @@ export default {
                                   },
                                   {
                                       path: 'messages',
-                                      populate: [
+                                      populate:
                                           {
                                               path: 'sender'
-                                          },
-                                          {
-                                              path: 'receiver'
                                           }
-                                      ]
                                   }]
                           },
                           {
@@ -94,5 +90,41 @@ export default {
                                                res.status(200).json(document);
                                            }
                                        })
+    },
+
+    // adds a liked event to attendee
+    addEventAttendee : (res, attendeeId, eventId) => {
+        attendeeModel.update(
+            { _id: attendeeId},
+            { $push: { events_liked: eventId }}
+        ).then(response => {
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to add liked event",
+                        msgError: true
+                    }
+                });
+        });
+    },
+
+    // removes a liked event from attendee
+    removeEventAttendee : (res, attendeeId, eventId) => {
+        attendeeModel.update(
+            { _id: attendeeId},
+            { $pull: { events_liked: eventId }}
+        ).then(response => {
+            res.status(200).json(response);
+        }).catch(err => {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to remove liked event",
+                        msgError: true
+                    }
+                });
+        });
     }
 }

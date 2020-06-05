@@ -18,7 +18,7 @@ organizerRouter.delete("/:organizerId", (req, res) => {
 });
 
 //update organizer by id
-organizerRouter.put(":organizerId", (req, res) => {
+organizerRouter.put("/:organizerId", (req, res) => {
     organizerService.updateOrganizer(res, req.params.organizerId, req.body);
 });
 

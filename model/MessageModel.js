@@ -12,11 +12,6 @@ const MessageSchema = new Schema(
             ref: "Attendee",
             required: true
         },
-        receiver: {
-            type: Schema.Types.ObjectId,
-            ref: "Attendee",
-            required: true
-        },
         timestamp: {
             type: Date,
             default: Date.now,

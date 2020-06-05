@@ -2,25 +2,48 @@ const eventModel = require("../model/EventModel");
 
 export default {
 
-    getEvents : (res) => {
-        eventModel.find({}, (err, response) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to get events",
-                            msgError: true
-                        }
-                    });
-            } else {
+    getEvents : (res, params) => {
+        eventModel.find(params)
+            .populate([
+                          {
+                              path: 'venue'
+                          },
+                          {
+                              path: 'organizer'
+                          },
+                          {
+                              path: 'attendee_likes'
+                          }
+                      ])
+            .then(response => {
                 res.status(200).json(response);
-            }
+            }).catch(err => {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to get events",
+                        msgError: true
+                    }
+                });
         });
     },
 
     getEvent : (res, eventId) => {
-        eventModel.find(eventId, (err, response) => {
-            if (err) {
+        eventModel.find(eventId)
+            .populate([
+                          {
+                              path: 'venue'
+                          },
+                          {
+                              path: 'organizer'
+                          },
+                          {
+                              path: 'attendee_likes'
+                          }
+                      ])
+            .then(response => {
+                res.status(200).json(response);
+            }).catch(err => {
                 res.status(500).json(
                     {
                         message: {
@@ -28,10 +51,7 @@ export default {
                             msgError: true
                         }
                     });
-            } else {
-                res.status(200).json(response);
-            }
-        });
+            });
     },
 
     createEvent : (res, event) => {

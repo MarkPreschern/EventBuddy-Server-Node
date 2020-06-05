@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Conversation = require("./ConversationModel");
-const Event = require("./EventModel");
-
 const AttendeeSchema = new Schema(
     {
         name: {
@@ -30,8 +27,14 @@ const AttendeeSchema = new Schema(
             type: String,
             required: true
         },
-        conversations: [Conversation],
-        events_liked: [Event],
+        conversations: [{
+            type: Schema.Types.ObjectId,
+            ref: "Conversation"
+        }],
+        events_liked: [{
+            type: Schema.Types.ObjectId,
+            ref: "Event"
+        }],
     });
 
-module.exports = mongoose.model("AttendeeSchema", AttendeeSchema);
+module.exports = mongoose.model("Attendee", AttendeeSchema);

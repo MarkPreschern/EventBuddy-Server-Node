@@ -37,4 +37,4 @@ const OrganizerSchema = new Schema(
         }
     });
 
-module.exports = mongoose.model("OrganizerSchema", OrganizerSchema);
+module.exports = mongoose.model("Organizer", OrganizerSchema);

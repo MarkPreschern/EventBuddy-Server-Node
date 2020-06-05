@@ -3,8 +3,8 @@ const eventRouter = express.Router();
 import eventService from "../services/EventService";
 import ticketMasterService from "../services/TicketMasterService";
 
-//read event
-eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", async (req, res) => {
+//read events
+eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", (req, res) => {
     const city = req.params.city;
     const startDateTime = req.params.city;
     const endDateTime = req.params.city;
@@ -24,10 +24,17 @@ eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", async (req, res)
     }
 
     // get events and TicketMaster events
-    const [err, response] = await Event.find(params).limit(20);
-    const [err2, response2] = await ticketMasterService.getEvents(params);
+    const [response1, response2] = Promise.all([
+        ticketMasterService.getEvents(params),
+        Event.find(params).limit(20)]);
 
-    if (err && err2) {
+    if (response1.ok && response2.ok) {
+        res.status(200).json([...response, ...response2]);
+    } else if (response1.ok) {
+        res.status(200).json(response1);
+    } else if (response2.ok) {
+        res.status(200).json(response2);
+    } else {
         res.status(500).json(
             {
                 message: {
@@ -35,23 +42,17 @@ eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", async (req, res)
                     msgError: true
                 }
             });
-    } else if (err) {
-        res.status(200).json(response2);
-    } else if (err2) {
-        res.status(200).json(response);
-    } else {
-        res.status(200).json([...response, ...response2]);
     }
 });
 
 //read event by id
-eventRouter.get("/:id", (req, res) => {
-    eventService.getEvent(res, req.params.id);
+eventRouter.get("/:eventId", (req, res) => {
+    eventService.getEvent(res, req.params.eventId);
 });
 
 //read event by id from TicketMaster API
-eventRouter.get("/external/:id", (req, res) => {
-    ticketMasterService.getEvent(res, req.params.id);
+eventRouter.get("/external/:eventId", (req, res) => {
+    ticketMasterService.getEvent(res, req.params.eventId);
 });
 
 //create event
@@ -60,13 +61,13 @@ eventRouter.post("/", (req, res) => {
 });
 
 //delete event by id
-eventRouter.delete("/:id", (req, res) => {
-    eventService.deleteEvent(res, req.params.id);
+eventRouter.delete("/:eventId", (req, res) => {
+    eventService.deleteEvent(res, req.params.eventId);
 });
 
 //update event by id
-eventRouter.put(":id", (req, res) => {
-    eventService.updateEvent(res, req.params.id, req.body);
+eventRouter.put(":eventId", (req, res) => {
+    eventService.updateEvent(res, req.params.eventId, req.body);
 });
 
 module.exports = eventRouter;

@@ -2,39 +2,50 @@ const attendeeModel = require("../model/AttendeeModel");
 
 export default {
 
-    getAttendees : (res) => {
-        attendeeModel.find({}, (err, response) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to get attendees",
-                            msgError: true
-                        }
-                    });
-            } else {
+    // gets an attendee and populates its sub-documents
+    getAttendee: (res, attendeeId) => {
+        attendeeModel.find(attendeeId)
+            .populate([
+                          {
+                              path: 'conversations',
+                              populate: [
+                                  {
+                                      path: 'sender'
+                                  },
+                                  {
+                                      path: 'receiver'
+                                  },
+                                  {
+                                      path: 'messages',
+                                      populate: [
+                                          {
+                                              path: 'sender'
+                                          },
+                                          {
+                                              path: 'receiver'
+                                          }
+                                      ]
+                                  }]
+                          },
+                          {
+                              path: 'events_liked'
+                          }
+                      ])
+            .then(response => {
                 res.status(200).json(response);
-            }
+            }).catch(err => {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to get attendee",
+                        msgError: true
+                    }
+                });
         });
     },
 
-    getAttendee : (res, attendeeId) => {
-        attendeeModel.find(attendeeId, (err, response) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to get attendee",
-                            msgError: true
-                        }
-                    });
-            } else {
-                res.status(200).json(response);
-            }
-        });
-    },
-
-    createAttendee : (res, attendee) => {
+    // creates an attendee
+    createAttendee: (res, attendee) => {
         new attendeeModel(attendee).save((err, document) => {
             if (err) {
                 res.status(500).json(
@@ -50,7 +61,8 @@ export default {
         })
     },
 
-    deleteAttendee : (res, attendeeId) => {
+    // deletes an attendee
+    deleteAttendee: (res, attendeeId) => {
         attendeeModel.findByIdAndDelete(attendeeId, err => {
             if (err) {
                 res.status(500).json(
@@ -66,19 +78,21 @@ export default {
         })
     },
 
-    updateAttendee : (res, attendeeId, attendee) => {
-        attendeeModel.findOneAndUpdate(attendeeId, attendee, {runValidators: true, new: true}, (err, document) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to update attendee",
-                            msgError: true
-                        }
-                    });
-            } else {
-                res.status(200).json(document);
-            }
-        })
+    // updates an attendee
+    updateAttendee: (res, attendeeId, attendee) => {
+        attendeeModel.findOneAndUpdate(attendeeId, attendee, {runValidators: true, new: true},
+                                       (err, document) => {
+                                           if (err) {
+                                               res.status(500).json(
+                                                   {
+                                                       message: {
+                                                           msgBody: "Unable to update attendee",
+                                                           msgError: true
+                                                       }
+                                                   });
+                                           } else {
+                                               res.status(200).json(document);
+                                           }
+                                       })
     }
 }

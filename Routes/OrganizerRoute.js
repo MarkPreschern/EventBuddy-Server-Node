@@ -2,14 +2,9 @@ const express = require("express");
 const organizerRouter = express.Router();
 const organizerService = require("../services/OrganizerService");
 
-//read organizer
-organizerRouter.get("/", (req, res) => {
-    organizerService.getOrganizers(res);
-});
-
 //read organizer by id
-organizerRouter.get("/:id", (req, res) => {
-    organizerService.getOrganizer(res, req.params.id);
+organizerRouter.get("/:organizerId", (req, res) => {
+    organizerService.getOrganizer(res, req.params.organizerId);
 });
 
 //create organizer
@@ -18,13 +13,13 @@ organizerRouter.post("/", (req, res) => {
 });
 
 //delete organizer by id
-organizerRouter.delete("/:id", (req, res) => {
-    organizerService.deleteOrganizer(res, req.params.id);
+organizerRouter.delete("/:organizerId", (req, res) => {
+    organizerService.deleteOrganizer(res, req.params.organizerId);
 });
 
 //update organizer by id
-organizerRouter.put(":id", (req, res) => {
-    organizerService.updateOrganizer(res, req.params.id, req.body);
+organizerRouter.put(":organizerId", (req, res) => {
+    organizerService.updateOrganizer(res, req.params.organizerId, req.body);
 });
 
 module.exports = organizerRouter;

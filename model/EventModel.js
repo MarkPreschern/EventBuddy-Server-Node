@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Organizer = require("./OrganizerModel");
-const Venue = require("./VenueModel");
-const Attendee = require("./AttendeeModel");
-
 const EventSchema = new Schema(
     {
         name: {
@@ -28,9 +24,18 @@ const EventSchema = new Schema(
             type: Boolean,
             default: false
         },
-        venue: Venue,
-        organizer: Organizer,
-        attendee_likes: [Attendee]
+        venue: {
+            type: Schema.Types.ObjectId,
+            ref: "Venue"
+        },
+        organizer: {
+            type: Schema.Types.ObjectId,
+            ref: "Organizer"
+        },
+        attendee_likes: [{
+            type: Schema.Types.ObjectId,
+            ref: "Attendee"
+        }]
     });
 
-module.exports = mongoose.model("EventSchema", EventSchema);
+module.exports = mongoose.model("Event", EventSchema);

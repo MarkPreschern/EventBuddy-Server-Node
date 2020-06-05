@@ -18,16 +18,16 @@ const mongoURL = process.env.MONGO_URL || "mongodb://localhost:27017/EventBuddy"
  */
 
 // events
-const event = require("./routes/EventRoute");
-app.use("/api/events", event);
+const eventRouter = require("./routes/EventRoute");
+app.use("/api/events", eventRouter);
 
 // attendees
-const attendee = require("./routes/AttendeeRoute");
-app.use("/api/attendees", attendee);
+const attendeeRouter = require("./routes/AttendeeRoute");
+app.use("/api/attendees", attendeeRouter);
 
 // organizers
-const organizers = require("./routes/OrganizerRoute");
-app.use("/api/organizers", organizers);
+const organizersRouter = require("./routes/OrganizerRoute");
+app.use("/api/organizers", organizersRouter);
 
 /**
  * Database Connection

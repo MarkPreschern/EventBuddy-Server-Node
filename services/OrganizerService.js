@@ -2,22 +2,6 @@ const organizerModel = require("../model/OrganizerModel");
 
 export default {
 
-    getOrganizers : (res) => {
-        organizerModel.find({}, (err, response) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to get organizers",
-                            msgError: true
-                        }
-                    });
-            } else {
-                res.status(200).json(response);
-            }
-        });
-    },
-
     getOrganizer : (res, organizerId) => {
         organizerModel.find(organizerId, (err, response) => {
             if (err) {

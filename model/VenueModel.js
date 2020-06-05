@@ -25,4 +25,4 @@ const VenueSchema = new Schema(
         },
         phone_number: Number
     });
-module.exports = mongoose.model("VenueSchema", VenueSchema);
+module.exports = mongoose.model("Venue", VenueSchema);

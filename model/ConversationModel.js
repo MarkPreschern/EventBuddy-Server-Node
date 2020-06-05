@@ -1,20 +1,22 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Attendee = require("./AttendeeModel");
-const Message = require("./MessageModel");
-
 const ConversationSchema = new Schema(
     {
         sender: {
-            type: Attendee,
+            type: Schema.Types.ObjectId,
+            ref: "Attendee",
             required: true
         },
         receiver: {
-            type: Attendee,
+            type: Schema.Types.ObjectId,
+            ref: "Attendee",
             required: true
         },
-        messages: [Message]
+        messages: [{
+            type: Schema.Types.ObjectId,
+            ref: "Message"
+        }]
     });
 
-module.exports = mongoose.model("ConversationSchema", ConversationSchema);
+module.exports = mongoose.model("Conversation", ConversationSchema);

@@ -93,7 +93,7 @@ export default {
     },
 
     // adds a liked event to attendee
-    addEventAttendee : (res, attendeeId, eventId) => {
+    addLikedEvent : (res, attendeeId, eventId) => {
         attendeeModel.update(
             { _id: attendeeId},
             { $push: { events_liked: eventId }}
@@ -111,7 +111,7 @@ export default {
     },
 
     // removes a liked event from attendee
-    removeEventAttendee : (res, attendeeId, eventId) => {
+    removeLikedEvent : (res, attendeeId, eventId) => {
         attendeeModel.update(
             { _id: attendeeId},
             { $pull: { events_liked: eventId }}
@@ -126,5 +126,5 @@ export default {
                     }
                 });
         });
-    }
+    },
 }

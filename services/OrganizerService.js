@@ -4,24 +4,24 @@ export default {
 
     // gets an organizer
     getOrganizer : (res, organizerId) => {
-        organizerModel.find(organizerId, (err, response) => {
-            if (err) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to get organizer",
-                            msgError: true
-                        }
-                    });
-            } else {
+        organizerModel.find(organizerId)
+            .populate('venues')
+            .then(response => {
                 res.status(200).json(response);
-            }
+            }).catch(err => {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to get organizer",
+                        msgError: true
+                    }
+                });
         });
     },
 
     // creates an organizer
     createOrganizer : (res, organizer) => {
-        new Organizer(organizer).save((err, document) => {
+        new organizerModel(organizer).save((err, document) => {
             if (err) {
                 res.status(500).json(
                     {
@@ -68,5 +68,5 @@ export default {
                 res.status(200).json(document);
             }
         });
-    }
+    },
 }

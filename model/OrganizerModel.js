@@ -34,7 +34,11 @@ const OrganizerSchema = new Schema(
         company_url: {
             type: String,
             required: true
-        }
+        },
+        venues: [{
+            type: Schema.Types.ObjectId,
+            ref: "Venue"
+        }]
     });
 
 module.exports = mongoose.model("Organizer", OrganizerSchema);

@@ -9,7 +9,7 @@ attendeeRouter.get("/:attendeeId", (req, res) => {
 
 //create attendee
 attendeeRouter.post("/", (req, res) => {
-    attendeeService.createAttendee(res, req.body);
+    attendeeService.createAttendee(res, req.body, req.body.password);
 });
 
 //delete attendee by id
@@ -30,6 +30,11 @@ attendeeRouter.post("/:attendeeId/event/:eventId", (req, res) => {
 //remove liked event from attendee
 attendeeRouter.delete("/:attendeeId/event/:eventId", (req, res) => {
     attendeeService.removeLikedEvent(res, req.params.attendeeId, req.params.eventId);
+});
+
+//log in attendee
+attendeeRouter.post("/login", (req, res) => {
+    attendeeService.loginAttendee(res, req.body.username, req.body.password);
 });
 
 module.exports = attendeeRouter;

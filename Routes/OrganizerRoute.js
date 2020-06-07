@@ -9,7 +9,7 @@ organizerRouter.get("/:organizerId", (req, res) => {
 
 //create organizer
 organizerRouter.post("/", (req, res) => {
-    organizerService.createOrganizer(res, req.body);
+    organizerService.createOrganizer(res, req.body, req.body.password);
 });
 
 //delete organizer by id
@@ -21,5 +21,11 @@ organizerRouter.delete("/:organizerId", (req, res) => {
 organizerRouter.put("/:organizerId", (req, res) => {
     organizerService.updateOrganizer(res, req.params.organizerId, req.body);
 });
+
+//log in organizer
+organizerRouter.post("/login", (req, res) => {
+    organizerService.loginOrganizer(res, req.body.username, req.body.password);
+});
+
 
 module.exports = organizerRouter;

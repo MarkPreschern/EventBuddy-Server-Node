@@ -7,12 +7,30 @@ const AttendeeSchema = new Schema(
             type: String,
             required: true
         },
+        username: {
+            type: String,
+            unique: true,
+            required: true
+        },
+        salt: {
+            type: String,
+            required: true
+        },
+        hash: {
+            type: String,
+            required: true
+        },
+        iterations: {
+            type: Number,
+            required: true
+        },
         phone_number: {
             type: String,
             required: true
         },
         email: {
             type: String,
+            unique: true,
             required: true
         },
         address: {

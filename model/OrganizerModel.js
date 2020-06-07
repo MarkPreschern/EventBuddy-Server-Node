@@ -3,8 +3,25 @@ const Schema = mongoose.Schema;
 
 const OrganizerSchema = new Schema(
     {
-        name: {
+        company_name: {
             type: String,
+            required: true
+        },
+        username: {
+            type: String,
+            unique: true,
+            required: true
+        },
+        salt: {
+            type: String,
+            required: true
+        },
+        hash: {
+            type: String,
+            required: true
+        },
+        iterations: {
+            type: Number,
             required: true
         },
         description: {
@@ -17,6 +34,7 @@ const OrganizerSchema = new Schema(
         },
         email: {
             type: String,
+            unique: true,
             required: true
         },
         address: {
@@ -26,10 +44,6 @@ const OrganizerSchema = new Schema(
         picture: {
             type: String,
             data: Buffer
-        },
-        company_name: {
-            type: String,
-            required: true
         },
         company_url: {
             type: String,

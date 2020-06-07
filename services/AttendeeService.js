@@ -1,4 +1,5 @@
 const attendeeModel = require("../model/AttendeeModel");
+const auth = require ("../Authentication");
 
 export default {
 
@@ -41,20 +42,36 @@ export default {
     },
 
     // creates an attendee
-    createAttendee: (res, attendee) => {
-        new attendeeModel(attendee).save((err, document) => {
-            if (err) {
+    createAttendee: (res, attendee, password) => {
+        auth.generateHash(password)
+            .then(response => {
+                attendee.salt = response.salt;
+                attendee.hash = response.hash;
+                attendee.iterations = response.iterations;
+
+                new attendeeModel(attendee).save((err, document) => {
+                    if (err) {
+                        res.status(500).json(
+                            {
+                                message: {
+                                    msgBody: "Unable to add attendee",
+                                    msgError: true
+                                }
+                            });
+                    } else {
+                        res.status(200).json(document);
+                    }
+                })
+            })
+            .catch(err => {
                 res.status(500).json(
                     {
                         message: {
-                            msgBody: "Unable to add attendee",
+                            msgBody: "Failed to encrypt attendee password",
                             msgError: true
                         }
                     });
-            } else {
-                res.status(200).json(document);
-            }
-        })
+            });
     },
 
     // deletes an attendee
@@ -127,4 +144,33 @@ export default {
                 });
         });
     },
+
+    // logs in an attendee
+    loginAttendee: (res, username, password) => {
+        attendeeModel.find({username: username}, (err, document) => {
+            if (err || !document) {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to find attendee",
+                            msgError: true
+                        }
+                    });
+            } else {
+                auth.verifyPassword(document.salt, document.hash, document.iterations, password)
+                    .then(response => {
+                        res.status(200).json(response);
+                    })
+                    .catch(err => {
+                        res.status(500).json(
+                            {
+                                message: {
+                                    msgBody: "Incorrect password",
+                                    msgError: true
+                                }
+                            });
+                    })
+            }
+        });
+    }
 }

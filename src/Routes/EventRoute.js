@@ -4,18 +4,18 @@ import eventService from "../services/EventService";
 import ticketMasterService from "../services/TicketMasterService";
 
 //read events
-eventRouter.get("/search/:city?:startDateTime?:endDateTime?:keyword?", (req, res) => {
+eventRouter.get("/search", (req, res) => {
     // set parameters
     const params = {};
-    if (req.params.city !== undefined) {
-        params.city = req.params.city;
+    if (req.query.city !== undefined) {
+        params.city = req.query.city;
     }
-    if (req.params.startDateTime !== undefined && req.params.endDateTime !== undefined) {
-        params.startDateTime = req.params.startDateTime;
-        params.endDateTime = req.params.endDateTime;
+    if (req.query.startDateTime !== undefined && req.query.endDateTime !== undefined) {
+        params.startDateTime = req.query.startDateTime;
+        params.endDateTime = req.query.endDateTime;
     }
-    if (req.params.keyword !== undefined) {
-        params.keyword = req.params.keyword;
+    if (req.query.keyword !== undefined) {
+        params.keyword = req.query.keyword;
     }
     // get events and TicketMaster events
     Promise.all([

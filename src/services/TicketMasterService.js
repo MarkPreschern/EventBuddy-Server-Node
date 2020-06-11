@@ -10,82 +10,90 @@ const url = (endpoint, params) => {
 // formats TicketMaster event to EventModel data
 // *** due to TicketMaster event data having numerous optional data, many checks for specific ***
 // *** data must be performed when formatting to EventModel data                              ***
+const formatSingleton = (event) => {
+    // creates event(s)
+    const EventModel = {
+        _id: event.id,
+        image_url: (event.images.length > 0) ? event.images[0].url : "",
+        name: event.name,
+        start_date: event.dates.start.localDate,
+        url: event.url,
+        external: true,
+        integrated: false
+    };
+    return getVenue(event).then(venueModel => {
+        if (venueModel !== -1) {
+            EventModel.venue = venueModel;
+        }
+        if (event.hasOwnProperty("description")) {
+            EventModel.description = event.description
+        }
+        if (event.hasOwnProperty("info")) {
+            EventModel.info = event.info
+        }
+        if (event.hasOwnProperty("accessibility")) {
+            EventModel.accessibility = event.accessibility.info
+        }
+        if (event.hasOwnProperty("ticketLimit")) {
+            EventModel.ticketLimit = event.ticketLimit.info
+        }
+        if (event.hasOwnProperty("pleaseNote")) {
+            EventModel.pleaseNote = event.pleaseNote.info
+        }
+
+        return EventModel;
+    });
+};
+
+// formats multiple events
 const format = async (data) => {
     if (!data.hasOwnProperty('_embedded')) {
         return [];
     } else {
         const events = data._embedded.events;
-        // creates venue
-        const getVenue = async (event) => {
-            if (event.hasOwnProperty("_embedded")) {
-                const embedded = event._embedded;
-                if (embedded.hasOwnProperty("venues")) {
-                    const venues = embedded.venues;
-
-                    let venueNames = [];
-                    let venueCountry = "";
-                    let venueState = "";
-                    let venueCity = "";
-                    let venueAddress = "";
-                    await venues.forEach(venue => {
-                        venueNames.push(venue.name);
-                        venueCountry = venue.country.name;
-                        venueState = (venue.state === undefined ? "" : venue.state.stateCode);
-                        venueCity = venue.city.name;
-                        venueAddress = venue.address.line1;
-                    });
-
-                    return {
-                        name: venueNames.join(" & "),
-                        country: venueCountry,
-                        state: venueState,
-                        city: venueCity,
-                        address: venueAddress
-                    }
-                } else {
-                    return -1;
-                }
-            } else {
-                return -1;
-            }
-        };
 
         let eventModels = [];
         for (let event of events) {
-            // creates event(s)
-            const EventModel = {
-                _id: event.id,
-                image_url: (event.images.length > 0) ? event.images[0].url : "",
-                name: event.name,
-                start_date: event.dates.start.localDate,
-                url: event.url,
-                external: true,
-                integrated: false
-            };
-            const venueModel = await getVenue(event);
-            if (venueModel !== -1) {
-                EventModel.venue = venueModel;
-            }
-            if (event.hasOwnProperty("description")) {
-                EventModel.description = event.description
-            }
-            if (event.hasOwnProperty("info")) {
-                EventModel.info = event.info
-            }
-            if (event.hasOwnProperty("accessibility")) {
-                EventModel.accessibility = event.accessibility.info
-            }
-            if (event.hasOwnProperty("ticketLimit")) {
-                EventModel.ticketLimit = event.ticketLimit.info
-            }
-            if (event.hasOwnProperty("pleaseNote")) {
-                EventModel.pleaseNote = event.pleaseNote.info
-            }
-
+            const EventModel = await formatSingleton(event);
             eventModels.push(EventModel);
         }
 
         return eventModels;
+    }
+};
+
+// creates venue
+const getVenue = async (event) => {
+    if (event.hasOwnProperty("_embedded")) {
+        const embedded = event._embedded;
+        if (embedded.hasOwnProperty("venues")) {
+            const venues = embedded.venues;
+
+            let venueNames = [];
+            let venueCountry = "";
+            let venueState = "";
+            let venueCity = "";
+            let venueAddress = "";
+            await venues.forEach(venue => {
+                venueNames.push(venue.name);
+                venueCountry = venue.country.name;
+                venueState = (venue.state === undefined ? "" : venue.state.stateCode);
+                venueCity = venue.city.name;
+                venueAddress = venue.address.line1;
+            });
+
+            return {
+                name: venueNames.join(" & "),
+                country: venueCountry,
+                state: venueState,
+                city: venueCity,
+                address: venueAddress
+            }
+        } else {
+            return -1;
+        }
+    } else {
+        return -1;
     }
 };
 
@@ -97,6 +105,7 @@ module.exports = {
                 return result.json();
             })
             .then(data => {
+                console.log(data);
                 return format(data);
             });
     },
@@ -107,7 +116,7 @@ module.exports = {
                 return result.json();
             })
             .then(data => {
-                return format(data);
+                return formatSingleton(data);
             })
             .then(response => {
                 res.status(200).json(response)

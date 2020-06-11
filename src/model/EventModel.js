@@ -7,6 +7,7 @@ const EventSchema = new Schema(
             type: String,
             required: true
         },
+        image_url: String,
         description: String,
         info: String,
         accessibility: String,

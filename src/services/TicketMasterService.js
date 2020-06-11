@@ -54,10 +54,13 @@ const format = async (data) => {
         for (let event of events) {
             // creates event(s)
             const EventModel = {
+                _id: event.id,
+                image_url: (event.images.length > 0) ? event.images[0].url : "",
                 name: event.name,
                 start_date: event.dates.start.localDate,
                 url: event.url,
-                external: true
+                external: true,
+                integrated: false
             };
             const venueModel = await getVenue(event);
             if (venueModel !== -1) {

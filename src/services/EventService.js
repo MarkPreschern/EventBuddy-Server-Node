@@ -58,7 +58,7 @@ module.exports = {
 
     // creates an event
     createEvent : (res, event) => {
-        new Event(event).save((err, document) => {
+        new eventModel(event).save((err, document) => {
             if (err) {
                 res.status(500).json(
                     {

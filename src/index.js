@@ -9,7 +9,9 @@ const bodyParser = require("body-parser");
  * App Variables
  */
 const app = express();
+const cors = require('cors');
 app.use(bodyParser.json());
+app.use(cors());
 const port = process.env.PORT || 5000;
 const mongoURL = process.env.MONGODB_URI || "mongodb://localhost:27017/EventBuddy";
 global.fetch = require("node-fetch");

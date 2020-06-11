@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 const app = express();
 app.use(bodyParser.json());
 const port = process.env.PORT || 5000;
-const mongoURL = process.env.MONGO_URL || "mongodb://localhost:27017/EventBuddy";
+const mongoURL = process.env.MONGODB_URI || "mongodb://localhost:27017/EventBuddy";
 global.fetch = require("node-fetch");
 
 /**

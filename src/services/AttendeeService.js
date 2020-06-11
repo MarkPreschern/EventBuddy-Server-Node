@@ -1,7 +1,7 @@
 const attendeeModel = require("../model/AttendeeModel");
 const auth = require ("../Authentication");
 
-export default {
+module.exports = {
 
     // gets an attendee and populates its sub-documents
     getAttendee: (res, attendeeId) => {

@@ -1,7 +1,7 @@
 const venueModel = require("../model/VenueModel");
 const organizerModel = require("../model/OrganizerModel");
 
-export default {
+module.exports = {
 
     // gets a venue
     getVenue : (res, venueId) => {

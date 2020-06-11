@@ -24,6 +24,10 @@ const EventSchema = new Schema(
             type: Boolean,
             default: false
         },
+        integrated: {
+            type: Boolean,
+            default: false
+        },
         venue: {
             type: Schema.Types.ObjectId,
             ref: "Venue"

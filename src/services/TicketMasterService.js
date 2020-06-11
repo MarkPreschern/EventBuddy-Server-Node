@@ -12,10 +12,9 @@ const url = (endpoint, params) => {
 // *** data must be performed when formatting to EventModel data                              ***
 const format = async (data) => {
     if (!data.hasOwnProperty('_embedded')) {
-        throw "Unable to get TicketMaster event";
+        return [];
     } else {
-        const event = data._embedded.events;
-
+        const events = data._embedded.events;
         // creates venue
         const getVenue = async (event) => {
             if (event.hasOwnProperty("_embedded")) {
@@ -51,49 +50,61 @@ const format = async (data) => {
             }
         };
 
-        // creates event
-        const EventModel = {
-            name: event.name,
-            start_date: event.dates.start.localDate,
-            url: event.url,
-            external: true
-        };
-        const venueModel = await getVenue(event);
-        if (venueModel === -1) {
-            EventModel.venue = venueModel;
-        }
-        if (event.hasOwnProperty("description")) {
-            EventModel.description = event.description
-        }
-        if (event.hasOwnProperty("info")) {
-            EventModel.info = event.info
-        }
-        if (event.hasOwnProperty("accessibility")) {
-            EventModel.accessibility = event.accessibility.info
-        }
-        if (event.hasOwnProperty("ticketLimit")) {
-            EventModel.ticketLimit = event.ticketLimit.info
-        }
-        if (event.hasOwnProperty("pleaseNote")) {
-            EventModel.pleaseNote = event.pleaseNote.info
+        let eventModels = [];
+        for (let event of events) {
+            // creates event(s)
+            const EventModel = {
+                name: event.name,
+                start_date: event.dates.start.localDate,
+                url: event.url,
+                external: true
+            };
+            const venueModel = await getVenue(event);
+            if (venueModel !== -1) {
+                EventModel.venue = venueModel;
+            }
+            if (event.hasOwnProperty("description")) {
+                EventModel.description = event.description
+            }
+            if (event.hasOwnProperty("info")) {
+                EventModel.info = event.info
+            }
+            if (event.hasOwnProperty("accessibility")) {
+                EventModel.accessibility = event.accessibility.info
+            }
+            if (event.hasOwnProperty("ticketLimit")) {
+                EventModel.ticketLimit = event.ticketLimit.info
+            }
+            if (event.hasOwnProperty("pleaseNote")) {
+                EventModel.pleaseNote = event.pleaseNote.info
+            }
+
+            eventModels.push(EventModel);
         }
 
-        return EventModel;
+        return eventModels;
     }
 };
 
-export default {
+module.exports = {
 
     getEvents : (params) => {
-        return fetch(url("/events", params)).then(result => {
-            return format(result.json());
-        });
+        return fetch(url("/events", params))
+            .then(result => {
+                return result.json();
+            })
+            .then(data => {
+                return format(data);
+            });
     },
 
     getEvent : (res, _id) => {
-        fetch(url(`/events/${_id}`, {}))
+        return fetch(url(`/events/${_id}`, {}))
             .then(result => {
-                return format(result.json());
+                return result.json();
+            })
+            .then(data => {
+                return format(data);
             })
             .then(response => {
                 res.status(200).json(response)
@@ -109,4 +120,4 @@ export default {
                 )
             });
     },
-}
+};

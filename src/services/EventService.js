@@ -1,10 +1,10 @@
 const eventModel = require("../model/EventModel");
 
-export default {
+module.exports = {
 
     // gets all events based on given parameters
-    getEvents : (res, params) => {
-        eventModel.find(params)
+    getEvents : (params) => {
+        return eventModel.find(params)
             .populate([
                           {
                               path: 'venue'
@@ -17,15 +17,15 @@ export default {
                           }
                       ])
             .then(response => {
-                res.status(200).json(response);
+                return response;
             }).catch(err => {
-            res.status(500).json(
-                {
-                    message: {
-                        msgBody: "Unable to get events",
-                        msgError: true
-                    }
-                });
+                console.log(err);
+            return {
+                message: {
+                    msgBody: "Unable to get events",
+                    msgError: true,
+                }
+            };
         });
     },
 
@@ -141,5 +141,19 @@ export default {
                     }
                 });
         });
+    },
+
+    // removes overlap in events between local database events and ticket master events
+    uniqueEventsOnly(localEvents, ticketMasterEvents) {
+        ticketMasterEvents.filter(ticketMasterEvent => {
+                                      for (let localEvent of localEvents) {
+                                          if (ticketMasterEvent.url === localEvent.url) {
+                                              return true;
+                                          }
+                                      }
+                                      return false;
+                                  }
+        );
+        return [...localEvents, ...ticketMasterEvents];
     }
 }

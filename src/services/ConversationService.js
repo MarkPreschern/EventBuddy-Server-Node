@@ -1,7 +1,7 @@
 const conversationModel = require("../model/ConversationModel");
 const attendeeModel = require("../model/AttendeeModel");
 
-export default {
+module.exports = {
 
     // gets a conversation
     getConversation : (res, conversationId) => {

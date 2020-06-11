@@ -4,45 +4,48 @@ import eventService from "../services/EventService";
 import ticketMasterService from "../services/TicketMasterService";
 
 //read events
-eventRouter.get("/:city?:startDateTime?:endDateTime?:keyword?", (req, res) => {
-    const city = req.params.city;
-    const startDateTime = req.params.city;
-    const endDateTime = req.params.city;
-    const keyword = req.params.city;
-
+eventRouter.get("/search/:city?:startDateTime?:endDateTime?:keyword?", (req, res) => {
     // set parameters
     const params = {};
-    if (city !== undefined) {
-        params.city = city;
+    if (req.params.city !== undefined) {
+        params.city = req.params.city;
     }
-    if (startDateTime !== undefined && endDateTime !== undefined) {
-        params.startDateTime = startDateTime;
-        params.endDateTime = endDateTime;
+    if (req.params.startDateTime !== undefined && req.params.endDateTime !== undefined) {
+        params.startDateTime = req.params.startDateTime;
+        params.endDateTime = req.params.endDateTime;
     }
-    if (keyword !== undefined) {
-        params.keyword = keyword;
+    if (req.params.keyword !== undefined) {
+        params.keyword = req.params.keyword;
     }
-
     // get events and TicketMaster events
-    const [response1, response2] = Promise.all([
-        ticketMasterService.getEvents(params),
-        Event.find(params).limit(20)]);
+    Promise.all([
+                    ticketMasterService.getEvents(params),
+                    eventService.getEvents(params)])
+        .then(values => {
+        const response1 = values[0];
+        const response2 = values[1];
 
-    if (response1.ok && response2.ok) {
-        res.status(200).json([...response, ...response2]);
-    } else if (response1.ok) {
-        res.status(200).json(response1);
-    } else if (response2.ok) {
-        res.status(200).json(response2);
-    } else {
-        res.status(500).json(
-            {
-                message: {
-                    msgBody: "Unable to get events",
-                    msgError: true
-                }
-            });
-    }
+        const ok1 = !response1.hasOwnProperty('message');
+        const ok2 = !response2.hasOwnProperty('message');
+
+        if (ok1 && ok2) {
+            res.status(200).json(eventService.uniqueEventsOnly(response1, response2));
+        } else if (ok1) {
+            res.status(200).json(response1);
+        } else if (ok2) {
+            res.status(200).json(response2);
+        } else {
+            res.status(500).json(
+                {
+                    message: {
+                        msgBody: "Unable to get events",
+                        msgError: true,
+                    }
+                });
+        }
+    }).catch(err => {
+        return err;
+    });
 });
 
 //read event by id

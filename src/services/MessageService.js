@@ -1,7 +1,7 @@
 const messageModel = require("../model/MessageModel");
 const conversationModel = require("../model/ConversationModel");
 
-export default {
+module.exports = {
 
     // gets a message
     getMessage : (res, messageId) => {

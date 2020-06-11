@@ -12,18 +12,19 @@ const app = express();
 app.use(bodyParser.json());
 const port = process.env.PORT || 5000;
 const mongoURL = process.env.MONGO_URL || "mongodb://localhost:27017/EventBuddy";
+global.fetch = require("node-fetch");
 
 /**
  * Routes Definitions
  */
 
 // routes
-const attendeeRouter = require("./routes/AttendeeRoute");
-const organizersRouter = require("./routes/OrganizerRoute");
-const eventRouter = require("./routes/EventRoute");
-const conversationRouter = require("./routes/ConversationRoute");
-const messageRouter = require("./routes/MessageRoute");
-const venueRouter = require("./routes/VenueRoute");
+const attendeeRouter = require("./Routes/AttendeeRoute");
+const organizersRouter = require("./Routes/OrganizerRoute");
+const eventRouter = require("./Routes/EventRoute");
+const conversationRouter = require("./Routes/ConversationRoute");
+const messageRouter = require("./Routes/MessageRoute");
+const venueRouter = require("./Routes/VenueRoute");
 
 // nesting routes
 attendeeRouter.use("/:attendeeId/conversations", conversationRouter);

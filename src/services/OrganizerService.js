@@ -1,7 +1,7 @@
 const organizerModel = require("../model/OrganizerModel");
 const auth = require("../Authentication");
 
-export default {
+module.exports = {
 
     // gets an organizer
     getOrganizer : (res, organizerId) => {

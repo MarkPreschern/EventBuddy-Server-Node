@@ -32,7 +32,7 @@ attendeeRouter.delete("/:attendeeId/event/:eventId", (req, res) => {
     attendeeService.removeLikedEvent(res, req.params.attendeeId, req.params.eventId);
 });
 
-//log in attendee
+//login attendee
 attendeeRouter.post("/login", (req, res) => {
     attendeeService.loginAttendee(res, req.body.username, req.body.password);
 });

@@ -5,19 +5,20 @@ module.exports = {
 
     // gets an organizer
     getOrganizer : (res, organizerId) => {
-        organizerModel.find(organizerId)
+        organizerModel.findOne({_id: organizerId})
             .populate('venues')
             .then(response => {
                 res.status(200).json(response);
             }).catch(err => {
-            res.status(500).json(
-                {
-                    message: {
-                        msgBody: "Unable to get organizer",
-                        msgError: true
-                    }
-                });
-        });
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to get organizer",
+                            msgError: true,
+                            error: err
+                        }
+                    });
+            });
     },
 
     // creates an organizer
@@ -34,10 +35,15 @@ module.exports = {
                             {
                                 message: {
                                     msgBody: "Unable to add organizer",
-                                    msgError: true
+                                    msgError: true,
+                                    error: err
                                 }
                             });
                     } else {
+                        document = document.toObject();
+                        delete document.salt;
+                        delete document.hash;
+                        delete document.iterations;
                         res.status(200).json(document);
                     }
                 })
@@ -89,19 +95,18 @@ module.exports = {
 
     // logs in an organizer
     loginOrganizer: (res, username, password) => {
-        organizerModel.find({username: username}, (err, document) => {
-            if (err || !document) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to find organizer",
-                            msgError: true
-                        }
-                    });
-            } else {
+        organizerModel.findOne({username: username})
+            .select("+salt")
+            .select("+hash")
+            .select("+iterations")
+            .then(document => {
                 auth.verifyPassword(document.salt, document.hash, document.iterations, password)
                     .then(response => {
-                        res.status(200).json(response);
+                        document = document.toObject();
+                        delete document.salt;
+                        delete document.hash;
+                        delete document.iterations;
+                        res.status(200).json(document);
                     })
                     .catch(err => {
                         res.status(500).json(
@@ -112,7 +117,15 @@ module.exports = {
                                 }
                             });
                     })
-            }
-        });
+            })
+            .catch(err => {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to find organizer",
+                            msgError: true
+                        }
+                    });
+            });
     }
-}
+};

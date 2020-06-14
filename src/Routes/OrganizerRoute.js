@@ -22,7 +22,7 @@ organizerRouter.put("/:organizerId", (req, res) => {
     organizerService.updateOrganizer(res, req.params.organizerId, req.body);
 });
 
-//log in organizer
+//login organizer
 organizerRouter.post("/login", (req, res) => {
     organizerService.loginOrganizer(res, req.body.username, req.body.password);
 });

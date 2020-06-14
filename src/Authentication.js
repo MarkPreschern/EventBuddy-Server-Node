@@ -11,7 +11,7 @@ const BYTE_TO_STRING_ENCODING = 'hex';
  * when creating a user or redefining the password
  */
 export function generateHash(password) {
-    return ((accept, reject) => {
+    return new Promise((accept, reject) => {
         const salt = crypto.randomBytes(SALT_LENGTH).toString(BYTE_TO_STRING_ENCODING);
         crypto.pbkdf2(password, salt, ITERATIONS, PASSWORD_LENGTH, DIGEST, (error, hash) => {
             if (error) {
@@ -32,7 +32,7 @@ export function generateHash(password) {
  * should be called when the user tries to log in.
  */
 export function verifyPassword(salt, hash, iterations, passwordAttempt) {
-    return ((accept, reject) => {
+    return new Promise((accept, reject) => {
         crypto.pbkdf2(passwordAttempt, salt, iterations, PASSWORD_LENGTH, DIGEST, (error, hashAttempt) => {
                 if (error) {
                     reject(error);

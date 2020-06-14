@@ -5,7 +5,7 @@ module.exports = {
 
     // gets an attendee and populates its sub-documents
     getAttendee: (res, attendeeId) => {
-        attendeeModel.find(attendeeId)
+        attendeeModel.find({_id: attendeeId})
             .populate([
                           {
                               path: 'conversations',
@@ -59,6 +59,10 @@ module.exports = {
                                 }
                             });
                     } else {
+                        document = document.toObject();
+                        delete document.salt;
+                        delete document.hash;
+                        delete document.iterations;
                         res.status(200).json(document);
                     }
                 })
@@ -68,7 +72,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Failed to encrypt attendee password",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             });
@@ -147,19 +152,18 @@ module.exports = {
 
     // logs in an attendee
     loginAttendee: (res, username, password) => {
-        attendeeModel.find({username: username}, (err, document) => {
-            if (err || !document) {
-                res.status(500).json(
-                    {
-                        message: {
-                            msgBody: "Unable to find attendee",
-                            msgError: true
-                        }
-                    });
-            } else {
+        attendeeModel.findOne({username: username})
+            .select("+salt")
+            .select("+hash")
+            .select("+iterations")
+            .then(document => {
                 auth.verifyPassword(document.salt, document.hash, document.iterations, password)
                     .then(response => {
-                        res.status(200).json(response);
+                        document = document.toObject();
+                        delete document.salt;
+                        delete document.hash;
+                        delete document.iterations;
+                        res.status(200).json(document);
                     })
                     .catch(err => {
                         res.status(500).json(
@@ -170,7 +174,15 @@ module.exports = {
                                 }
                             });
                     })
-            }
-        });
+            })
+            .catch(err => {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to find attendee",
+                            msgError: true
+                        }
+                    });
+            });
     }
-}
+};

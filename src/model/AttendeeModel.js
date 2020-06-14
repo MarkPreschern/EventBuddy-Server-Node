@@ -14,15 +14,18 @@ const AttendeeSchema = new Schema(
         },
         salt: {
             type: String,
-            required: true
+            required: true,
+            select: false
         },
         hash: {
             type: String,
-            required: true
+            required: true,
+            select: false
         },
         iterations: {
             type: Number,
-            required: true
+            required: true,
+            select: false
         },
         phone_number: {
             type: String,
@@ -41,6 +44,7 @@ const AttendeeSchema = new Schema(
             type: String,
             required: true
         },
+        image_url: String,
         conversations: [{
             type: Schema.Types.ObjectId,
             ref: "Conversation"

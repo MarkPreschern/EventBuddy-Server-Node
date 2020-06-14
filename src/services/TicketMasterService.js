@@ -105,7 +105,6 @@ module.exports = {
                 return result.json();
             })
             .then(data => {
-                console.log(data);
                 return format(data);
             });
     },

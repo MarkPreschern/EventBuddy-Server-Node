@@ -14,15 +14,18 @@ const OrganizerSchema = new Schema(
         },
         salt: {
             type: String,
-            required: true
+            required: true,
+            select: false
         },
         hash: {
             type: String,
-            required: true
+            required: true,
+            select: false
         },
         iterations: {
             type: Number,
-            required: true
+            required: true,
+            select: false
         },
         description: {
             type: String,
@@ -37,14 +40,11 @@ const OrganizerSchema = new Schema(
             unique: true,
             required: true
         },
-        picture: {
-            type: String,
-            data: Buffer
-        },
         company_url: {
             type: String,
             required: true
         },
+        image_url: String,
         venues: [{
             type: Schema.Types.ObjectId,
             ref: "Venue"

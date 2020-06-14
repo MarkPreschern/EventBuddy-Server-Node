@@ -5,7 +5,7 @@ module.exports = {
 
     // gets a venue
     getVenue : (res, venueId) => {
-        venueModel.find(venueId, (err, response) => {
+        venueModel.findOne({_id: venueId}, (err, response) => {
             if (err) {
                 res.status(500).json(
                     {

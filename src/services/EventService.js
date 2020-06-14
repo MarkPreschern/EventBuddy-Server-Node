@@ -19,14 +19,13 @@ module.exports = {
             .then(response => {
                 return response;
             }).catch(err => {
-                console.log(err);
-            return {
-                message: {
-                    msgBody: "Unable to get events",
-                    msgError: true,
-                }
-            };
-        });
+                return {
+                    message: {
+                        msgBody: "Unable to get events",
+                        msgError: true,
+                    }
+                };
+            });
     },
 
     // gets an event and populates it's sub-documents

@@ -37,10 +37,6 @@ const OrganizerSchema = new Schema(
             unique: true,
             required: true
         },
-        address: {
-            type: String,
-            required: true
-        },
         picture: {
             type: String,
             data: Buffer

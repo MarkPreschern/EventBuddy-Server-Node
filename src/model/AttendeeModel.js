@@ -33,10 +33,6 @@ const AttendeeSchema = new Schema(
             unique: true,
             required: true
         },
-        address: {
-            type: String,
-            required: true
-        },
         dob: {
             type: Date,
             required: true

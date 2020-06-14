@@ -5,7 +5,7 @@ module.exports = {
 
     // gets a conversation
     getConversation : (res, conversationId) => {
-        conversationModel.find(conversationId, (err, response) => {
+        conversationModel.findOne(conversationId, (err, response) => {
             if (err) {
                 res.status(500).json(
                     {
@@ -79,7 +79,7 @@ module.exports = {
 
     // updates a conversation
     updateConversation : async (res, attendeeId, conversationId, conversation) => {
-        const document = conversationModel.findOneAndUpdate(conversationId, conversation, {runValidators: true, new: true});
+        const document = conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true});
 
         const error = () => {
             res.status(500).json(
@@ -104,4 +104,4 @@ module.exports = {
             error();
         }
     },
-}
+};

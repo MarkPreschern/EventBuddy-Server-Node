@@ -79,7 +79,7 @@ module.exports = {
 
     // updates a venue
     updateVenue : async (res, organizerId, venueId, venue) => {
-        const document = venueModel.findOneAndUpdate(venueId, venue, {runValidators: true, new: true});
+        const document = venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true});
 
         const error = () => {
             res.status(500).json(
@@ -104,4 +104,4 @@ module.exports = {
             error();
         }
     },
-}
+};

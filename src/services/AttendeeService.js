@@ -5,7 +5,7 @@ module.exports = {
 
     // gets an attendee and populates its sub-documents
     getAttendee: (res, attendeeId) => {
-        attendeeModel.find({_id: attendeeId})
+        attendeeModel.findOne({_id: attendeeId})
             .populate([
                           {
                               path: 'conversations',
@@ -98,7 +98,7 @@ module.exports = {
 
     // updates an attendee
     updateAttendee: (res, attendeeId, attendee) => {
-        attendeeModel.findOneAndUpdate(attendeeId, attendee, {runValidators: true, new: true},
+        attendeeModel.findOneAndUpdate({_id: attendeeId}, attendee, {runValidators: true, new: true},
                                        (err, document) => {
                                            if (err) {
                                                res.status(500).json(

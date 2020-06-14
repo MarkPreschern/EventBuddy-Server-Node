@@ -78,7 +78,7 @@ module.exports = {
 
     // updates an organizer
     updateOrganizer : (res, organizerId, organizer) => {
-        organizerModel.findOneAndUpdate(organizerId, organizer, {runValidators: true, new: true}, (err, document) => {
+        organizerModel.findOneAndUpdate({_id: organizerId}, organizer, {runValidators: true, new: true}, (err, document) => {
             if (err) {
                 res.status(500).json(
                     {

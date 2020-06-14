@@ -91,7 +91,7 @@ module.exports = {
 
     // updates an event
     updateEvent : (res, eventId, event) => {
-        eventModel.findOneAndUpdate(eventId, event, {runValidators: true, new: true}, (err, document) => {
+        eventModel.findOneAndUpdate({_id: eventId}, event, {runValidators: true, new: true}, (err, document) => {
             if (err) {
                 res.status(500).json(
                     {
@@ -155,4 +155,4 @@ module.exports = {
         );
         return [...localEvents, ...ticketMasterEvents];
     }
-}
+};

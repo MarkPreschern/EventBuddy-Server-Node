@@ -5,7 +5,7 @@ module.exports = {
 
     // gets a message
     getMessage : (res, messageId) => {
-        messageModel.find(messageId, (err, response) => {
+        messageModel.findOne(messageId, (err, response) => {
             if (err) {
                 res.status(500).json(
                     {
@@ -79,7 +79,7 @@ module.exports = {
 
     // updates a message
     updateMessage : async (res, conversationId, messageId, message) => {
-        const document = messageModel.findOneAndUpdate(messageId, message, {runValidators: true, new: true});
+        const document = messageModel.findOneAndUpdate({_id: messageId}, message, {runValidators: true, new: true});
 
         const error = () => {
             res.status(500).json(
@@ -104,4 +104,4 @@ module.exports = {
             error();
         }
     },
-}
+};

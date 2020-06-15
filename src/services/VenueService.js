@@ -89,35 +89,20 @@ module.exports = {
     },
 
     // updates a venue
-    updateVenue : async (res, organizerId, venueId, venue) => {
-        const error = (err) => {
-            res.status(500).json(
-                {
-                    message: {
-                        msgBody: "Unable to update venue",
-                        msgError: true,
-                        error: err
-                    }
-                });
-        };
-
-        try {
-            const document = venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true});
-
-            if (organizerId === "-1") {
-                res.status(200).json(document);
+    updateVenue : (res, organizerId, venueId, venue) => {
+        venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true}, (err, document) => {
+            if (err) {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to update event",
+                            msgError: true,
+                            error: err
+                        }
+                    });
             } else {
-                organizerModel.update(
-                    {_id: organizerId},
-                    {$set: {venues: venue}}
-                ).then(response => {
-                    res.status(200).json(document);
-                }).catch(err => {
-                    error(err);
-                });
+                res.status(200).json(document);
             }
-        } catch (e) {
-            error(e);
-        }
-    },
+        });
+    }
 };

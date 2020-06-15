@@ -81,31 +81,20 @@ module.exports = {
     },
 
     // updates a conversation
-    updateConversation : async (res, attendeeId, conversationId, conversation) => {
-        const error = (err) => {
-            res.status(500).json(
-                {
-                    message: {
-                        msgBody: "Unable to update conversation",
-                        msgError: true,
-                        error: err
-                    }
-                });
-        };
-
-        try {
-            const document = conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true});
-
-            attendeeModel.update(
-                { _id: attendeeId},
-                { $set: { conversations: conversation }}
-            ).then(response => {
+    updateConversation : (res, attendeeId, conversationId, conversation) => {
+        conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true}, (err, document) => {
+            if (err) {
+                res.status(500).json(
+                    {
+                        message: {
+                            msgBody: "Unable to update event",
+                            msgError: true,
+                            error: err
+                        }
+                    });
+            } else {
                 res.status(200).json(document);
-            }).catch(err => {
-                error(err);
-            });
-        } catch (e) {
-            error("");
-        }
+            }
+        });
     },
 };

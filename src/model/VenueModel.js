@@ -11,10 +11,7 @@ const VenueSchema = new Schema(
             type: String,
             required: true
         },
-        state: {
-            type: String,
-            required: true
-        },
+        state: String,
         city: {
             type: String,
             required: true

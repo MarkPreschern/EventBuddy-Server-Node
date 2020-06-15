@@ -86,8 +86,17 @@ module.exports = {
 
     // updates an organizer
     updateOrganizer : (res, organizerId, organizer) => {
-        organizerModel.findOneAndUpdate({_id: organizerId}, organizer, {runValidators: true, new: true}, (err, document) => {
-            if (err) {
+        organizerModel.findOneAndUpdate({_id: organizerId}, organizer, {runValidators: true, new: true})
+            .populate([
+                          {
+                              path: 'venues'
+                          },
+                          {
+                              path: 'events'
+                          }])
+            .then(document => {
+                res.status(200).json(document);
+            }).catch(err => {
                 res.status(500).json(
                     {
                         message: {
@@ -96,10 +105,7 @@ module.exports = {
                             error: err
                         }
                     });
-            } else {
-                res.status(200).json(document);
-            }
-        });
+            });
     },
 
     // logs in an organizer

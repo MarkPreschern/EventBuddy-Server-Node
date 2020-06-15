@@ -35,7 +35,8 @@ module.exports = {
                 {
                     message: {
                         msgBody: "Unable to get attendee",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         });
@@ -55,7 +56,8 @@ module.exports = {
                             {
                                 message: {
                                     msgBody: "Unable to add attendee",
-                                    msgError: true
+                                    msgError: true,
+                                    error: err
                                 }
                             });
                     } else {
@@ -87,7 +89,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to delete attendee",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -98,27 +101,28 @@ module.exports = {
 
     // updates an attendee
     updateAttendee: (res, attendeeId, attendee) => {
-        attendeeModel.findOneAndUpdate({_id: attendeeId}, attendee, {runValidators: true, new: true},
-                                       (err, document) => {
-                                           if (err) {
-                                               res.status(500).json(
-                                                   {
-                                                       message: {
-                                                           msgBody: "Unable to update attendee",
-                                                           msgError: true
-                                                       }
-                                                   });
-                                           } else {
-                                               res.status(200).json(document);
-                                           }
-                                       })
+        attendeeModel.findOneAndUpdate({_id: attendeeId}, attendee, {runValidators: true, new: true}, (err, document) => {
+           if (err) {
+               res.status(500).json(
+                   {
+                       message: {
+                           msgBody: "Unable to update attendee",
+                           msgError: true,
+                           error: err
+                       }
+                   });
+           } else {
+               res.status(200).json(document);
+           }
+       })
     },
 
     // adds a liked event to attendee
     addLikedEvent : (res, attendeeId, eventId) => {
         attendeeModel.update(
             { _id: attendeeId},
-            { $push: { events_liked: eventId }}
+            { $push: { events_liked: eventId }},
+            {runValidators: true, new: true}
         ).then(response => {
             res.status(200).json(response);
         }).catch(err => {
@@ -126,7 +130,8 @@ module.exports = {
                 {
                     message: {
                         msgBody: "Unable to add liked event",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         });
@@ -144,7 +149,8 @@ module.exports = {
                 {
                     message: {
                         msgBody: "Unable to remove liked event",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         });
@@ -170,7 +176,8 @@ module.exports = {
                             {
                                 message: {
                                     msgBody: "Incorrect password",
-                                    msgError: true
+                                    msgError: true,
+                                    error: err
                                 }
                             });
                     })
@@ -180,7 +187,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to find attendee",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             });

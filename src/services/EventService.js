@@ -23,6 +23,7 @@ module.exports = {
                     message: {
                         msgBody: "Unable to get events",
                         msgError: true,
+                        error: err
                     }
                 };
             });
@@ -49,7 +50,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to get event",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             });
@@ -63,7 +65,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to add event",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -80,7 +83,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to delete event",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -97,7 +101,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to update event",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -110,7 +115,8 @@ module.exports = {
     addEventAttendee : (res, eventId, attendeeId) => {
         eventModel.update(
             { _id: eventId},
-            { $push: { attendee_likes: attendeeId }}
+            { $push: { attendee_likes: attendeeId }},
+            {runValidators: true, new: true}
         ).then(response => {
             res.status(200).json(response);
         }).catch(err => {
@@ -118,7 +124,8 @@ module.exports = {
                 {
                     message: {
                         msgBody: "Unable to add event attendee",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         });
@@ -136,7 +143,8 @@ module.exports = {
                 {
                     message: {
                         msgBody: "Unable to remove event attendee",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         });

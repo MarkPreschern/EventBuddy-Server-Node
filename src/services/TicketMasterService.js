@@ -125,7 +125,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: err.message,
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     }
                 )

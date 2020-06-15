@@ -53,7 +53,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Failed to encrypt organizer password",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             });
@@ -67,7 +68,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to delete organizer",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -84,7 +86,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to update organizer",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -113,7 +116,8 @@ module.exports = {
                             {
                                 message: {
                                     msgBody: "Incorrect password",
-                                    msgError: true
+                                    msgError: true,
+                                    error: err
                                 }
                             });
                     })
@@ -123,7 +127,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to find organizer",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             });

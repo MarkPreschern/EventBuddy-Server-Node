@@ -11,7 +11,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to get conversation",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -25,12 +26,13 @@ module.exports = {
         const newConversation = new conversationModel(conversation);
         const document = await newConversation.save();
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to add conversation",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
@@ -42,10 +44,10 @@ module.exports = {
             ).then(response => {
                 res.status(200).json(document);
             }).catch(err => {
-                error();
+                error(err);
             });
         } else {
-            error();
+            error("");
         }
     },
 
@@ -53,12 +55,13 @@ module.exports = {
     deleteConversation : async (res, attendeeId, conversationId) => {
         const response = await findByIdAndDelete(conversationId);
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to delete conversation",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
@@ -70,10 +73,10 @@ module.exports = {
             ).then(response => {
                 res.status(200).json(response);
             }).catch(err => {
-                error();
+                error(err);
             });
         } else {
-            error();
+            error("");
         }
     },
 
@@ -81,12 +84,13 @@ module.exports = {
     updateConversation : async (res, attendeeId, conversationId, conversation) => {
         const document = conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true});
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to update conversation",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
@@ -98,10 +102,10 @@ module.exports = {
             ).then(response => {
                 res.status(200).json(response);
             }).catch(err => {
-                error();
+                error(err);
             });
         } else {
-            error();
+            error("");
         }
     },
 };

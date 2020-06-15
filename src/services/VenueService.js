@@ -11,7 +11,8 @@ module.exports = {
                     {
                         message: {
                             msgBody: "Unable to get venue",
-                            msgError: true
+                            msgError: true,
+                            error: err
                         }
                     });
             } else {
@@ -25,27 +26,32 @@ module.exports = {
         const newVenue = new venueModel(venue);
         const document = await newVenue.save();
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to add venue",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
 
         if (document.ok) {
-            organizerModel.update(
-                { _id: organizerId},
-                { $push: { venues: newVenue }}
-            ).then(response => {
+            if (organizerId === -1) {
                 res.status(200).json(document);
-            }).catch(err => {
-                error();
-            });
+            } else {
+                organizerModel.update(
+                    {_id: organizerId},
+                    {$push: {venues: newVenue}}
+                ).then(response => {
+                    res.status(200).json(document);
+                }).catch(err => {
+                    error(err);
+                });
+            }
         } else {
-            error();
+            error("");
         }
     },
 
@@ -53,27 +59,32 @@ module.exports = {
     deleteVenue : async (res, organizerId, venueId) => {
         const response = await findByIdAndDelete(venueId);
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to delete venue",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
 
         if (response.ok) {
-            organizerModel.update(
-                { _id: organizerId},
-                { $pull: { venues: venueId }}
-            ).then(response => {
-                res.status(200).json(response);
-            }).catch(err => {
-                error();
-            });
+            if (organizerId === -1) {
+                res.status(200).json(document);
+            } else {
+                organizerModel.update(
+                    {_id: organizerId},
+                    {$pull: {venues: venueId}}
+                ).then(response => {
+                    res.status(200).json(response);
+                }).catch(err => {
+                    error(err);
+                });
+            }
         } else {
-            error();
+            error("");
         }
     },
 
@@ -81,27 +92,32 @@ module.exports = {
     updateVenue : async (res, organizerId, venueId, venue) => {
         const document = venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true});
 
-        const error = () => {
+        const error = (err) => {
             res.status(500).json(
                 {
                     message: {
                         msgBody: "Unable to update venue",
-                        msgError: true
+                        msgError: true,
+                        error: err
                     }
                 });
         };
 
         if (document.ok) {
-            organizerModel.update(
-                { _id: organizerId},
-                { $set: { venues: venue }}
-            ).then(response => {
-                res.status(200).json(response);
-            }).catch(err => {
-                error();
-            });
+            if (organizerId === -1) {
+                res.status(200).json(document);
+            } else {
+                organizerModel.update(
+                    {_id: organizerId},
+                    {$set: {venues: venue}}
+                ).then(response => {
+                    res.status(200).json(response);
+                }).catch(err => {
+                    error(err);
+                });
+            }
         } else {
-            error();
+            error("");
         }
     },
 };

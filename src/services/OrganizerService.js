@@ -6,7 +6,13 @@ module.exports = {
     // gets an organizer
     getOrganizer : (res, organizerId) => {
         organizerModel.findOne({_id: organizerId})
-            .populate('venues')
+            .populate([
+                          {
+                              path: 'venues'
+                          },
+                          {
+                              path: 'events'
+                          }])
             .then(response => {
                 res.status(200).json(response);
             }).catch(err => {
@@ -99,6 +105,13 @@ module.exports = {
     // logs in an organizer
     loginOrganizer: (res, username, password) => {
         organizerModel.findOne({username: username})
+            .populate([
+                          {
+                              path: 'venues'
+                          },
+                          {
+                              path: 'events'
+                          }])
             .select("+salt")
             .select("+hash")
             .select("+iterations")

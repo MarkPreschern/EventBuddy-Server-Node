@@ -48,6 +48,10 @@ const OrganizerSchema = new Schema(
         venues: [{
             type: Schema.Types.ObjectId,
             ref: "Venue"
+        }],
+        events: [{
+            type: Schema.Types.ObjectId,
+            ref: "Event"
         }]
     });
 

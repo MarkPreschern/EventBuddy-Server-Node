@@ -31,7 +31,7 @@ module.exports = {
 
     // gets an event and populates it's sub-documents
     getEvent : (res, eventId) => {
-        eventModel.find(eventId)
+        eventModel.findOne({_id: eventId})
             .populate([
                           {
                               path: 'venue'

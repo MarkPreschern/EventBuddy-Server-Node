@@ -159,6 +159,28 @@ module.exports = {
     // logs in an attendee
     loginAttendee: (res, username, password) => {
         attendeeModel.findOne({username: username})
+            .populate([
+                          {
+                              path: 'conversations',
+                              populate: [
+                                  {
+                                      path: 'sender'
+                                  },
+                                  {
+                                      path: 'receiver'
+                                  },
+                                  {
+                                      path: 'messages',
+                                      populate:
+                                          {
+                                              path: 'sender'
+                                          }
+                                  }]
+                          },
+                          {
+                              path: 'events_liked'
+                          }
+                      ])
             .select("+salt")
             .select("+hash")
             .select("+iterations")

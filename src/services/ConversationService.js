@@ -23,9 +23,6 @@ module.exports = {
 
     // creates a conversation
     createConversation : async (res, attendeeId, conversation) => {
-        const newConversation = new conversationModel(conversation);
-        const document = await newConversation.save();
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -37,7 +34,10 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
+        try {
+            const newConversation = new conversationModel(conversation);
+            const document = await newConversation.save();
+
             attendeeModel.update(
                 { _id: attendeeId},
                 { $push: { conversations: newConversation }}
@@ -46,15 +46,13 @@ module.exports = {
             }).catch(err => {
                 error(err);
             });
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // deletes a conversation
     deleteConversation : async (res, attendeeId, conversationId) => {
-        const response = await findByIdAndDelete(conversationId);
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -66,7 +64,9 @@ module.exports = {
                 });
         };
 
-        if (response.ok) {
+        try {
+            const response = await findByIdAndDelete(conversationId);
+
             attendeeModel.update(
                 { _id: attendeeId},
                 { $pull: { conversations: conversationId }}
@@ -75,15 +75,13 @@ module.exports = {
             }).catch(err => {
                 error(err);
             });
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // updates a conversation
     updateConversation : async (res, attendeeId, conversationId, conversation) => {
-        const document = conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true});
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -95,16 +93,18 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
+        try {
+            const document = conversationModel.findOneAndUpdate({_id: conversationId}, conversation, {runValidators: true, new: true});
+
             attendeeModel.update(
                 { _id: attendeeId},
                 { $set: { conversations: conversation }}
             ).then(response => {
-                res.status(200).json(response);
+                res.status(200).json(document);
             }).catch(err => {
                 error(err);
             });
-        } else {
+        } catch (e) {
             error("");
         }
     },

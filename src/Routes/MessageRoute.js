@@ -1,5 +1,5 @@
 const express = require("express");
-const messageRouter = express.Router();
+const messageRouter = express.Router({mergeParams: true});
 const messageService = require("../services/MessageService");
 
 //read message by id

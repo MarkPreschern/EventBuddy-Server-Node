@@ -1,5 +1,5 @@
 const express = require("express");
-const venueRouter = express.Router();
+const venueRouter = express.Router({mergeParams: true});
 const venueService = require("../services/VenueService");
 
 //read venue by id

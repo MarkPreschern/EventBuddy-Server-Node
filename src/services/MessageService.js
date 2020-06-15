@@ -23,9 +23,6 @@ module.exports = {
 
     // creates a message
     createMessage : async (res, conversationId, message) => {
-        const newMessage = new messageModel(message);
-        const document = await newMessage.save();
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -37,7 +34,10 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
+        try {
+            const newMessage = new messageModel(message);
+            const document = await newMessage.save();
+
             conversationModel.update(
                 { _id: conversationId},
                 { $push: { messages: newMessage }}
@@ -46,15 +46,13 @@ module.exports = {
             }).catch(err => {
                 error(err);
             });
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // deletes a message
     deleteMessage : async (res, conversationId, messageId) => {
-        const response = await findByIdAndDelete(messageId);
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -66,7 +64,9 @@ module.exports = {
                 });
         };
 
-        if (response.ok) {
+        try {
+            const response = await findByIdAndDelete(messageId);
+
             conversationModel.update(
                 { _id: conversationId},
                 { $pull: { messages: messageId }}
@@ -75,15 +75,13 @@ module.exports = {
             }).catch(err => {
                 error(err);
             });
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // updates a message
     updateMessage : async (res, conversationId, messageId, message) => {
-        const document = messageModel.findOneAndUpdate({_id: messageId}, message, {runValidators: true, new: true});
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -95,17 +93,19 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
+        try {
+            const document = await messageModel.findOneAndUpdate({_id: messageId}, message, {runValidators: true, new: true});
+
             conversationModel.update(
                 { _id: conversationId},
                 { $set: { messages: message }}
             ).then(response => {
-                res.status(200).json(response);
+                res.status(200).json(document);
             }).catch(err => {
                 error(err);
             });
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 };

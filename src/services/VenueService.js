@@ -23,9 +23,6 @@ module.exports = {
 
     // creates a venue
     createVenue : async (res, organizerId, venue) => {
-        const newVenue = new venueModel(venue);
-        const document = await newVenue.save();
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -37,8 +34,11 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
-            if (organizerId === -1) {
+        try {
+            const newVenue = new venueModel(venue);
+            const document = await newVenue.save();
+
+            if (organizerId === "-1") {
                 res.status(200).json(document);
             } else {
                 organizerModel.update(
@@ -50,15 +50,13 @@ module.exports = {
                     error(err);
                 });
             }
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // deletes a venue
     deleteVenue : async (res, organizerId, venueId) => {
-        const response = await findByIdAndDelete(venueId);
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -70,9 +68,11 @@ module.exports = {
                 });
         };
 
-        if (response.ok) {
-            if (organizerId === -1) {
-                res.status(200).json(document);
+        try {
+            const response = await findByIdAndDelete(venueId);
+
+            if (organizerId === "-1") {
+                res.status(200).json(response);
             } else {
                 organizerModel.update(
                     {_id: organizerId},
@@ -83,15 +83,13 @@ module.exports = {
                     error(err);
                 });
             }
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 
     // updates a venue
     updateVenue : async (res, organizerId, venueId, venue) => {
-        const document = venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true});
-
         const error = (err) => {
             res.status(500).json(
                 {
@@ -103,21 +101,23 @@ module.exports = {
                 });
         };
 
-        if (document.ok) {
-            if (organizerId === -1) {
+        try {
+            const document = venueModel.findOneAndUpdate({_id: venueId}, venue, {runValidators: true, new: true});
+
+            if (organizerId === "-1") {
                 res.status(200).json(document);
             } else {
                 organizerModel.update(
                     {_id: organizerId},
                     {$set: {venues: venue}}
                 ).then(response => {
-                    res.status(200).json(response);
+                    res.status(200).json(document);
                 }).catch(err => {
                     error(err);
                 });
             }
-        } else {
-            error("");
+        } catch (e) {
+            error(e);
         }
     },
 };

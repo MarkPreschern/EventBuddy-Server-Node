@@ -87,7 +87,7 @@ module.exports = {
                 res.status(500).json(
                     {
                         message: {
-                            msgBody: "Unable to update event",
+                            msgBody: "Unable to update conversation",
                             msgError: true,
                             error: err
                         }

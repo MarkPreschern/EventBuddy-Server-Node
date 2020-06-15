@@ -11,7 +11,11 @@ module.exports = {
                               path: 'venues'
                           },
                           {
-                              path: 'events'
+                              path: 'events',
+                              populate:
+                                  {
+                                      path: 'venue'
+                                  }
                           }])
             .then(response => {
                 res.status(200).json(response);
@@ -92,7 +96,11 @@ module.exports = {
                               path: 'venues'
                           },
                           {
-                              path: 'events'
+                              path: 'events',
+                              populate:
+                                  {
+                                      path: 'venue'
+                                  }
                           }])
             .then(document => {
                 res.status(200).json(document);
@@ -116,7 +124,11 @@ module.exports = {
                               path: 'venues'
                           },
                           {
-                              path: 'events'
+                              path: 'events',
+                              populate:
+                                  {
+                                      path: 'venue'
+                                  }
                           }])
             .select("+salt")
             .select("+hash")

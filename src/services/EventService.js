@@ -18,6 +18,7 @@ module.exports = {
         }
 
         return eventModel.find(params)
+            .limit(20)
             .populate([
                           {
                               path: 'venue'

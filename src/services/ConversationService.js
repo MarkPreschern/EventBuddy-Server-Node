@@ -38,21 +38,24 @@ module.exports = {
             const newConversation = new conversationModel(conversation);
             const document = await newConversation.save();
 
-            attendeeModel.update(
+            await attendeeModel.update(
                 { _id: attendeeId},
                 { $push: { conversations: newConversation }}
-            ).then(response => {
-                res.status(200).json(document);
-            }).catch(err => {
-                error(err);
-            });
+            );
+
+            await attendeeModel.update(
+                { _id: conversation.receiver._id},
+                { $push: { conversations: newConversation }}
+            );
+
+            res.status(200).json(document);
         } catch (e) {
             error(e);
         }
     },
 
     // deletes a conversation
-    deleteConversation : async (res, attendeeId, conversationId) => {
+    deleteConversation : async (res, attendeeId, conversationId, conversation) => {
         const error = (err) => {
             res.status(500).json(
                 {
@@ -67,14 +70,17 @@ module.exports = {
         try {
             const response = await findByIdAndDelete(conversationId);
 
-            attendeeModel.update(
+            await attendeeModel.update(
                 { _id: attendeeId},
                 { $pull: { conversations: conversationId }}
-            ).then(response => {
-                res.status(200).json(response);
-            }).catch(err => {
-                error(err);
-            });
+            );
+
+            await attendeeModel.update(
+                { _id: conversation.receiver._id},
+                { $pull: { conversations: conversationId }}
+            );
+
+            res.status(200).json(response);
         } catch (e) {
             error(e);
         }

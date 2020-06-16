@@ -14,7 +14,7 @@ conversationRouter.post("/", (req, res) => {
 
 //delete conversation by id
 conversationRouter.delete("/:conversationId", (req, res) => {
-    conversationService.deleteConversation(res, req.params.attendeeId, req.params.conversationId);
+    conversationService.deleteConversation(res, req.params.attendeeId, req.params.conversationId, req.body);
 });
 
 //update conversation by id

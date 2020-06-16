@@ -9,12 +9,12 @@ messageRouter.get("/:messageId", (req, res) => {
 
 //create message
 messageRouter.post("/", (req, res) => {
-    messageService.createMessage(res, req.params.organizerId, req.body);
+    messageService.createMessage(res, req.params.conversationId, req.body);
 });
 
 //delete message by id
 messageRouter.delete("/:messageId", (req, res) => {
-    messageService.deleteMessage(res, req.params.organizerId, req.params.messageId);
+    messageService.deleteMessage(res, req.params.conversationId, req.params.messageId);
 });
 
 //update message by id

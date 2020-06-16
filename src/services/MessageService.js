@@ -5,7 +5,7 @@ module.exports = {
 
     // gets a message
     getMessage : (res, messageId) => {
-        messageModel.findOne(messageId, (err, response) => {
+        messageModel.findOne({_id: messageId}, (err, response) => {
             if (err) {
                 res.status(500).json(
                     {

@@ -97,10 +97,27 @@ const getVenue = async (event) => {
     }
 };
 
+// gets search parameters
+const getParams = (req) => {
+    // set parameters
+    const params = {};
+    if (req.query.city !== undefined) {
+        params.city = req.query.city;
+    }
+    if (req.query.startDateTime !== undefined && req.query.endDateTime !== undefined) {
+        params.startDateTime = req.query.startDateTime;
+        params.endDateTime = req.query.endDateTime;
+    }
+    if (req.query.keyword !== undefined) {
+        params.keyword = req.query.keyword;
+    }
+    return params;
+};
+
 module.exports = {
 
-    getEvents : (params) => {
-        return fetch(url("/events", params))
+    getEvents : (req) => {
+        return fetch(url("/events", getParams(req)))
             .then(result => {
                 return result.json();
             })

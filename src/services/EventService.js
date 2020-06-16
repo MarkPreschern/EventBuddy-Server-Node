@@ -3,7 +3,20 @@ const eventModel = require("../model/EventModel");
 module.exports = {
 
     // gets all events based on given parameters
-    getEvents : (params) => {
+    getEvents : (req) => {
+
+        // set parameters
+        const params = {};
+        if (req.query.city !== undefined) {
+            params.city = req.query.city;
+        }
+        if (req.query.startDateTime !== undefined && req.query.endDateTime !== undefined) {
+            params.start_date = req.query.startDateTime;
+        }
+        if (req.query.keyword !== undefined) {
+            params.name = req.query.keyword;
+        }
+
         return eventModel.find(params)
             .populate([
                           {
@@ -17,6 +30,7 @@ module.exports = {
                           }
                       ])
             .then(response => {
+                console.log(response);
                 return response;
             }).catch(err => {
                 return {
@@ -152,13 +166,14 @@ module.exports = {
 
     // removes overlap in events between local database events and ticket master events
     uniqueEventsOnly(localEvents, ticketMasterEvents) {
-        ticketMasterEvents.filter(ticketMasterEvent => {
+        ticketMasterEvents = ticketMasterEvents.filter(ticketMasterEvent => {
                                       for (let localEvent of localEvents) {
                                           if (ticketMasterEvent.url === localEvent.url) {
-                                              return true;
+                                              console.log("yay");
+                                              return false;
                                           }
                                       }
-                                      return false;
+                                      return true;
                                   }
         );
         return [...localEvents, ...ticketMasterEvents];
